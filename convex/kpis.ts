@@ -61,6 +61,19 @@ export const upsert = mutation({
   },
 });
 
+export const removeByKindKey = mutation({
+  args: { kind: v.union(v.literal("daily"), v.literal("weekly")), key: v.string() },
+  handler: async (ctx, { kind, key }) => {
+    const existing = await ctx.db
+      .query("kpis")
+      .withIndex("by_kind_key", (q) => q.eq("kind", kind).eq("key", key))
+      .unique();
+    if (!existing) return { ok: true, deleted: false };
+    await ctx.db.delete(existing._id);
+    return { ok: true, deleted: true };
+  },
+});
+
 export const latest = query({
   args: { kind: v.union(v.literal("daily"), v.literal("weekly")) },
   handler: async (ctx, { kind }) => {

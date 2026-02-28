@@ -25,4 +25,23 @@ http.route({
   }),
 });
 
+http.route({
+  path: "/ingest/kpi/delete",
+  method: "POST",
+  handler: httpAction(async (ctx, req) => {
+    const auth = req.headers.get("authorization") || "";
+    const expected = process.env.INGEST_TOKEN;
+    if (!expected) {
+      return new Response("INGEST_TOKEN not configured", { status: 500 });
+    }
+    if (auth !== `Bearer ${expected}`) {
+      return new Response("Unauthorized", { status: 401 });
+    }
+
+    const body = await req.json();
+    const res = await ctx.runMutation(api.kpis.removeByKindKey, body);
+    return Response.json(res);
+  }),
+});
+
 export default http;
