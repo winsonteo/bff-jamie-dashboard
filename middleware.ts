@@ -11,8 +11,8 @@ function unauthorized() {
 }
 
 export function middleware(req: NextRequest) {
-  const user = process.env.DASH_USER;
-  const pass = process.env.DASH_PASS;
+  const user = process.env.DASH_USER?.trim();
+  const pass = process.env.DASH_PASS?.trim();
   if (!user || !pass) return unauthorized();
 
   const auth = req.headers.get("authorization");
