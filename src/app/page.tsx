@@ -32,6 +32,13 @@ function KpiDetails({ kpi }: { kpi: any }) {
   const rrColor = rr >= 90 ? "#34A853" : rr >= 75 ? "#FBBC04" : "#DC2626";
 
   const bucket = kpi.primaryBuckets;
+  const bucketRows = [
+    { label: "≤30m", value: bucket.le30m, color: "#34A853" },
+    { label: "30–60m", value: bucket.m30_60, color: "#FBBC04" },
+    { label: "1–3h", value: bucket.h1_3, color: "#9CA3AF" },
+    { label: ">3h", value: bucket.gt3h, color: "#DC2626" },
+  ];
+  const maxBucket = Math.max(...bucketRows.map((b) => b.value), 1);
   const unanswered = kpi.unansweredTop ?? [];
 
   return (
@@ -60,11 +67,23 @@ function KpiDetails({ kpi }: { kpi: any }) {
 
       <div style={{ display: "grid", gridTemplateColumns: "repeat(2, minmax(0, 1fr))", gap: 12 }}>
         <Card title="Response Time Buckets (Primary)">
-          <div style={{ display: "grid", gap: 6, fontSize: 13 }}>
-            <div>≤30m: <b>{bucket.le30m}</b></div>
-            <div>30–60m: <b style={{ color: "#FBBC04" }}>{bucket.m30_60}</b></div>
-            <div>1–3h: <b>{bucket.h1_3}</b></div>
-            <div>&gt;3h: <b>{bucket.gt3h}</b></div>
+          <div style={{ display: "grid", gap: 10 }}>
+            {bucketRows.map((row) => (
+              <div key={row.label} style={{ display: "grid", gridTemplateColumns: "56px minmax(0, 1fr) 30px", gap: 8, alignItems: "center" }}>
+                <span style={{ fontSize: 12, color: "#6B7280" }}>{row.label}</span>
+                <div style={{ background: "#F3F4F6", borderRadius: 999, height: 10, overflow: "hidden" }}>
+                  <div
+                    style={{
+                      width: `${Math.max((row.value / maxBucket) * 100, row.value > 0 ? 4 : 0)}%`,
+                      height: "100%",
+                      background: row.color,
+                      borderRadius: 999,
+                    }}
+                  />
+                </div>
+                <span style={{ fontSize: 12, fontWeight: 700, textAlign: "right" }}>{row.value}</span>
+              </div>
+            ))}
           </div>
           <div style={{ marginTop: 8, fontSize: 12, color: "#6B7280" }}>Distribution of reply times (wall clock)</div>
         </Card>
