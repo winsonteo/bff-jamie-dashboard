@@ -95,10 +95,10 @@ function KpiDetails({ kpi }: { kpi: any }) {
         )}
       </div>
 
-      <Card title="High Priority (Unanswered)">
-        <div style={{ fontSize: 12, color: "#6B7280", marginBottom: 10 }}>Oldest DMs with no reply yet</div>
+      <Card title="All Unanswered DMs">
+        <div style={{ fontSize: 12, color: "#6B7280", marginBottom: 10 }}>All DMs with no reply yet, oldest first</div>
         <div style={{ display: "grid", gap: 8 }}>
-          {unanswered.slice(0, 10).map((u: any) => {
+          {unanswered.map((u: any) => {
             const pill = u.ageHours >= 17 ? "#DC2626" : u.ageHours >= 6 ? "#FBBC04" : "#9CA3AF";
             return (
               <div key={u.peer} style={{ display: "grid", gridTemplateColumns: "72px 140px 72px 1fr", gap: 10, alignItems: "center" }}>
